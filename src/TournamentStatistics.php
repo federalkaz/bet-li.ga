@@ -11,11 +11,11 @@ namespace site\data;
 include_once 'lib/curl_query.php';
 include_once 'lib/simple_html_dom.php';
 
-class StatisticCalculation
+class TournamentStatistics
 {
 
     // Набор данных
-    public $dataSource = [];
+    private $dataSource = [];
 
     function __construct(string $link)
     {
@@ -65,7 +65,7 @@ class StatisticCalculation
     }
 
     // Получаем данные о команде по месту в турнирной таблице
-    public function getRatingData($rating)
+    public function getInformationAboutTeamByRating($rating)
     {
         foreach ($this->dataSource as $item) {
             if ($item['rating'] == $rating) {
@@ -76,7 +76,7 @@ class StatisticCalculation
     }
 
     // Получаем данные о команде по её имени
-    public function getNameData(string $name)
+    public function getInformationByTeamName(string $name)
     {
         // Начинаем перебирать строки таблицы (команды со статистикой)
         foreach ($this->dataSource as $item) {
@@ -84,18 +84,18 @@ class StatisticCalculation
             $key = $item['rating'];
             // И в случае её нахождения возвращаем набор данных
             if ($item['name'] === $name) {
-                return $this->getRatingData($key);//тут вызвать функцию возврата данных по турнирному положению команды
-            // В случае неудачи сообщаем об этом
+                return $this->getInformationAboutTeamByRating($key);//тут вызвать функцию возврата данных по турнирному положению команды
             }
         }
+        // В случае неудачи сообщаем об этом
         return 'Данная команда не найдена! Убедитесь в правильности её написания либо существовании.';
     }
 
     // Получаем нужные данные по имени команды
-    public function getOptionalOneParameter(string $name, $parameter)
+    public function getOptionalDataByTeamName(string $name, $parameter)
     {
         // Формируем набор данных для запрашиваемой команды
-        $data = $this->getNameData($name);
+        $data = $this->getInformationByTeamName($name);
         // Возвращаем запрашиваемый параметр
         switch ($parameter) {
             case 'rating':
@@ -128,7 +128,7 @@ class StatisticCalculation
     }
 
     // Получаем нужные данные по имени команды заранее указав необходимые параметры
-    public function getOptionalManyParameter(string $name, array $parameters = [
+    public function getOptionalManyParameterByTeamName(string $name, array $parameters = [
         'rating' => false,
         'name' => false,
         'points' => false,
@@ -145,79 +145,27 @@ class StatisticCalculation
     ])
     {
         // Получаем набор данных для запрашиваемой команды
-        $data = $this->getNameData($name);
-        // Начинаем пробегать по массиву с запрашиваемыми параметрам
+        $data = $this->getInformationByTeamName($name);
+        /*
+         Берём элемент массива с параметрами
+         сравниваем его с элементом массива данных
+         если есть совпадение по ключу, то перезаписываем значение
+         */
+        $count = 0;
         foreach ($parameters as $parameter => $value) {
-            echo var_dump($parameter).PHP_EOL;
-        }
-        foreach ($parameters as $parameter => $value) {
-            if ($parameter != 'rating') {
-                unset($data['rating']);
-            }
-            if ($parameter != 'name') {
-                unset($data['name']);
-            }
-            if ($parameter != 'points') {
-                unset($data['points']);
-            }
-            if ($parameter != 'lost_points') {
-                unset($data['lost_points']);
-            }
-            if ($parameter != 'games') {
-                unset($data['games']);
-            }
-            if ($parameter != 'winnings') {
-                unset($data['winnings']);
-            }
-            if ($parameter != 'defeats') {
-                unset($data['defeats']);
-            }
-            if ($parameter != 'defeats_overtime') {
-                unset($data['defeats_overtime']);
-            }
-            if ($parameter != 'winnings_overtime') {
-                unset($data['winnings_overtime']);
-            }
-            if ($parameter != 'clogged_pucks') {
-                unset($data['clogged_pucks']);
-            }
-            if ($parameter != 'missing_pucks') {
-                unset($data['missing_pucks']);
-            }
-            if ($parameter != 'puck_difference') {
-                unset($data['puck_difference']);
-            }
-            if ($parameter != 'percentage_points') {
-                unset($data['percentage_points']);
+            if ($value == false) $count++;
+            foreach ($data as $key => $val) {
+                if ($parameter == $key && $value == true) {
+                    $parameters[$key] = $val;
+                }
             }
         }
-        if ($data == null) {
+        if ($count == 13) {
             return 'Не выбран ни один возвращаемый параметр! Пожалуйста, выберите хотя бы один.';
         } else {
             // Возвращаем запрашиваемые данные
-            return $data;
+            return $parameters;
         }
     }
 
-
-//Метод принимающий наименование команды и выполняющий действия над ними class('Washington')->matches();
 }
-
-$nhl = new StatisticCalculation('http://nhl.ru/index.php?action=shedul&op=standings_total');
-//$data = $nhl->getAllData();
-//echo var_dump($nhl->getAllData());
-/*
-foreach ($data as $item) {
-    echo $item['rating'].' | '.$item['name'].' | '.$item['points'].' | '.$item['lost_points'].' | '.$item['games'].' | '.$item['winnings'].' | '.$item['defeats'].' | '.$item['defeats_overtime'].' | '.$item['winnings_overtime'].' | '.$item['clogged_pucks'].' | '.$item['missing_pucks'].' | '.$item['puck_difference'].' | '.$item['percentage_points'].PHP_EOL;
-}
-*/
-
-//echo var_dump($nhl->getNameData('Калгари')->getRating());
-//echo var_dump($nhl->getRatingData(11));
-//echo $nhl->getOptionalOneParameter('Калгари', 'games');
-$parameters = [
-    'rating' => true,
-    'points' => true,
-    'games' => true
-];
-echo var_dump($nhl->getOptionalManyParameter('Нэшвилл', $parameters));
