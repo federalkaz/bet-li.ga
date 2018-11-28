@@ -10,7 +10,7 @@ class JewishCuisine2
 $link1 = 'https://olimp.kz/betting/index.php?page=line&action=2&sel[]=1928636';
 $link2 = 'https://olimp.kz/betting/index.php?page=line&action=2&sel[]=17214';
 $link3 = 'https://olimp.kz/betting/index.php?page=line&action=2&sel[]=354';
-$link4 = 'https://olimp.kz/betting/index.php?page=line&action=2&sel[]=11657';
+$link4 = 'https://olimp.kz/betting/index.php?page=line&action=2&sel[]=354';
 
 $html = curl_get($link4);
 $dom = str_get_html($html);

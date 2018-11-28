@@ -15,8 +15,9 @@ class TournamentStatistics
 {
 
     // Набор данных
-    private $dataSource = [];
+    private $dataSet = [];
 
+    // Формируем набор данных
     function __construct(string $link)
     {
         // Инициализируем подключение к сайту
@@ -54,20 +55,20 @@ class TournamentStatistics
             // процент набранных очков;
             $element['percentage_points'] = $item->find('td', 13)->plaintext;
             // Формируем набор данных полученными значениями
-            $this->dataSource[] = $element;
+            $this->dataSet[] = $element;
         }
     }
 
     // Получаем данные с сайта
     public function getAllData()
     {
-        return $this->dataSource;
+        return $this->dataSet;
     }
 
     // Получаем данные о команде по месту в турнирной таблице
     public function getInformationAboutTeamByRating($rating)
     {
-        foreach ($this->dataSource as $item) {
+        foreach ($this->dataSet as $item) {
             if ($item['rating'] == $rating) {
                 return $item;
             }
@@ -79,7 +80,7 @@ class TournamentStatistics
     public function getInformationByTeamName(string $name)
     {
         // Начинаем перебирать строки таблицы (команды со статистикой)
-        foreach ($this->dataSource as $item) {
+        foreach ($this->dataSet as $item) {
             // Запоминаем номер просматриваемой команды в турнирной таблице
             $key = $item['rating'];
             // И в случае её нахождения возвращаем набор данных
