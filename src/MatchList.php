@@ -41,13 +41,14 @@ class MatchList
         }
         //Избавляемся от лишнего уровня вложенности массивов и передаём полученные данные
         $this->dataSet = array_slice($elements, 3);
+    }
 
-
-
-
-
-        echo var_dump($this->dataSet);
+    // Возвращаем список матчей
+    function getAllMatch()
+    {
+        return $this->dataSet;
     }
 }
 
-$nhl = new MatchList('http://nhl.ru/index.php?action=shedul&op=bydate&y=2018&m=11&d=28');
+//$nhl = new MatchList('http://nhl.ru/index.php?action=shedul&op=bydate&y=2018&m=12&d=24');
+//echo var_dump($nhl->getAllMatch());
