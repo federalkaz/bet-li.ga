@@ -116,6 +116,6 @@ class GameForecast
 
 
 /*
-$nhl = new GameForecast('http://nhl.ru/index.php?action=game13&op=prognoz_game&id=27892');
-echo var_dump($nhl->getGameForecast());
+$nhl = new GameForecast('http://nhl.ru/index.php?action=game13&op=prognoz_game&id=28010');
+echo var_dump($nhl->getGameForecastSite());
 */

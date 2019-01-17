@@ -24,6 +24,7 @@ $linkMatchList = "http://nhl.ru/index.php?action=shedul&op=bydate&y=$date[year]&
 $matchList = new MatchList($linkMatchList);
 $tournamentStatistics = new TournamentStatistics('http://nhl.ru/index.php?action=shedul&op=standings_total');
 
+
 // Формируем список игр
 foreach ($matchList->getAllMatch() as $lines) {
     // Создаём объекты с прогнозами встреч
@@ -32,13 +33,20 @@ foreach ($matchList->getAllMatch() as $lines) {
 
 
     // Выводим информацию
-    echo $lines['home_team'] . ' - ' . $lines['guest_team'].PHP_EOL;
-    echo 'Средний прогноз: '. $game['average_forecast'].PHP_EOL;
-    echo 'Ставок: '. $game['bets'].PHP_EOL;
-    $team1 = $tournamentStatistics->getOptionalManyParameterByTeamName($lines['home_team'],['rating' => true]);
-    $team2 = $tournamentStatistics->getOptionalManyParameterByTeamName($lines['guest_team'],['rating' => true]);
+    echo $lines['home_team'] . ' - ' . $lines['guest_team'].PHP_EOL.'<br>';
+    //echo 'Средний прогноз: '. $game['average_forecast'].PHP_EOL.'<br>';
+    //echo 'Ставок: '. $game['bets'].PHP_EOL.'<br>';
 
-    echo var_dump($gameForecast->getGameForecastManualCalculation($team1, $team2)).PHP_EOL;
+    $team1 = $tournamentStatistics->getOptionalManyParameterByTeamName(rtrim($lines['home_team']), ['rating' => true]);
+    $team2 = $tournamentStatistics->getOptionalManyParameterByTeamName(rtrim($lines['guest_team']), ['rating' => true]);
+    //echo var_dump($team1).'<br>';
+    //echo var_dump($team2).'<br>';
+    $result = $gameForecast->getGameForecastManualCalculation($team1, $team2);
+
+    echo 'Средний прогноз: '.$result['average_forecast'].'<br>';
+    echo 'Ставок: '.$result['bets'].'<br>';
+    echo $result['positionDifference'].'<br>';
+    echo '<br>';
 }
 
 //echo var_dump($gameForecast);

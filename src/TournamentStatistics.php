@@ -152,6 +152,7 @@ class TournamentStatistics
          сравниваем его с элементом массива данных
          если есть совпадение по ключу, то перезаписываем значение
          */
+        //echo var_dump($data).'<br>';
         $count = 0;
         foreach ($parameters as $parameter => $value) {
             if ($value == false) $count++;
@@ -170,3 +171,7 @@ class TournamentStatistics
     }
 
 }
+/*
+$ts = new TournamentStatistics('http://nhl.ru/index.php?action=shedul&op=standings_total');
+echo var_dump($ts->getOptionalManyParameterByTeamName('Калгари', ['rating' => true]));
+*/
